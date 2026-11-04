@@ -30,6 +30,7 @@ public final class BreakJob {
 	private final long[] chunks;
 	private int index;
 	int broken;
+	public int failed;
 	private int separateDrops;
 
 	BreakJob(ServerLevel level, String key, Component name, Predicate<BlockState> match, ServerPlayer player,
@@ -115,8 +116,11 @@ public final class BreakJob {
 				}
 				state.spawnAfterBreak(level, pos, tool, true);
 			}
-			level.setBlock(pos, state.getFluidState().createLegacyBlock(), flags);
-			broken++;
+			if (level.setBlock(pos, state.getFluidState().createLegacyBlock(), flags)) {
+				broken++;
+			} else {
+				failed++;
+			}
 		}
 		if (mergedPos != null) {
 			for (ItemStack s : merged) Block.popResource(level, mergedPos, s);

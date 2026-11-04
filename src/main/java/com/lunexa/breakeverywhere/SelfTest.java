@@ -69,6 +69,28 @@ public final class SelfTest {
 		return n;
 	}
 
+	private void diag(ServerLevel level, java.util.function.Predicate<BlockState> p) {
+		int shown = 0;
+		for (long c : LoadedChunks.snapshot(level)) {
+			int cx = ChunkPos.getX(c), cz = ChunkPos.getZ(c);
+			LevelChunk chunk = level.getChunkSource().getChunkNow(cx, cz);
+			if (chunk == null) continue;
+			for (int y = -64; y < -60; y++) {
+				BlockPos pos = new BlockPos(cx * 16 + 1, y, cz * 16 + 1);
+				if (!p.test(chunk.getBlockState(pos))) continue;
+				var viaLevel = level.getChunkAt(pos);
+				boolean same = viaLevel == chunk;
+				boolean set = level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+				lines.add("[INFO] chunk " + cx + "," + cz + " y=" + y + " sameChunkObj=" + same
+						+ " chunkStatus=" + chunk.getPersistedStatus() + " fullStatus=" + chunk.getFullStatus()
+						+ " setBlock=" + set + " after(level)=" + level.getBlockState(pos) + " after(chunk)=" + chunk.getBlockState(pos)
+						+ " sectionIdx=" + chunk.getSectionIndex(y) + " sections=" + chunk.getSections().length);
+				if (++shown >= 4) return;
+				break;
+			}
+		}
+	}
+
 	private void runAll(MinecraftServer server) {
 		ServerLevel level = server.overworld();
 
@@ -147,6 +169,8 @@ public final class SelfTest {
 		int items = level.getEntitiesOfClass(ItemEntity.class, new AABB(-400, -70, -400, 400, 330, 400)).size();
 		check("stress: all dirt broken", dirtBefore > 1000 && dirtAfter == 0,
 				"before=" + dirtBefore + " after=" + dirtAfter + " broken=" + (BreakManager.lastFinished == null ? -1 : BreakManager.lastFinished.broken) + " in " + ms + " ms");
+		lines.add("[INFO] setBlock failed=" + (BreakManager.lastFinished == null ? -1 : BreakManager.lastFinished.failed));
+		diag(level, s -> s.is(Blocks.DIRT));
 		check("stress: item entities limited (merged per chunk)", items < BEConfig.get().maxSeparateDrops + 2000, items);
 
 		// ---- time budget per tick ----
