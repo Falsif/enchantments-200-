@@ -27,7 +27,8 @@ public final class BreakJob {
 	final ItemStack tool;
 	final ServerPlayer player;
 	final boolean drops;
-	private final long[] chunks;
+	private final it.unimi.dsi.fastutil.longs.LongArrayList chunks = new it.unimi.dsi.fastutil.longs.LongArrayList();
+	private final it.unimi.dsi.fastutil.longs.LongOpenHashSet seen = new it.unimi.dsi.fastutil.longs.LongOpenHashSet();
 	private int index;
 	int broken;
 	public int failed;
@@ -44,17 +45,23 @@ public final class BreakJob {
 		this.drops = drops;
 		int ox = origin.getX() >> 4;
 		int oz = origin.getZ() >> 4;
-		this.chunks = Arrays.stream(Arrays.stream(LoadedChunks.snapshot(level)).boxed().toArray(Long[]::new))
+		long[] sorted = Arrays.stream(Arrays.stream(LoadedChunks.snapshot(level)).boxed().toArray(Long[]::new))
 				.sorted(Comparator.comparingLong(c -> {
 					long dx = ChunkPos.getX(c) - ox;
 					long dz = ChunkPos.getZ(c) - oz;
 					return dx * dx + dz * dz;
 				}))
 				.mapToLong(Long::longValue).toArray();
+		for (long c : sorted) addChunk(c);
+	}
+
+	/** Chunks that load while the wave is running are added to it. */
+	void addChunk(long c) {
+		if (seen.add(c)) chunks.add(c);
 	}
 
 	public int totalChunks() {
-		return chunks.length;
+		return chunks.size();
 	}
 
 	public int doneChunks() {
@@ -62,13 +69,13 @@ public final class BreakJob {
 	}
 
 	public boolean finished() {
-		return index >= chunks.length;
+		return index >= chunks.size();
 	}
 
 	/** Works until the deadline (System.nanoTime) or until done. Returns true when finished. */
 	boolean step(long deadline) {
-		while (index < chunks.length) {
-			long c = chunks[index++];
+		while (index < chunks.size()) {
+			long c = chunks.getLong(index++);
 			processChunk(ChunkPos.getX(c), ChunkPos.getZ(c));
 			if (System.nanoTime() > deadline) break;
 		}

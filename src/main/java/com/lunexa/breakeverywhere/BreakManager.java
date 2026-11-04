@@ -26,6 +26,12 @@ public final class BreakManager {
 		return JOBS.size();
 	}
 
+	static void onChunkLoad(ServerLevel level, long chunk) {
+		for (BreakJob j : JOBS) {
+			if (j.level == level) j.addChunk(chunk);
+		}
+	}
+
 	public static void stopAll() {
 		JOBS.clear();
 	}

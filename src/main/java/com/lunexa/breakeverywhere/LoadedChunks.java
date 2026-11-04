@@ -17,8 +17,11 @@ public final class LoadedChunks {
 	private LoadedChunks() {}
 
 	public static void register() {
-		ServerChunkEvents.CHUNK_LOAD.register((level, chunk) ->
-				LOADED.computeIfAbsent(level.dimension(), k -> new LongOpenHashSet()).add(chunk.getPos().toLong()));
+		ServerChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
+			long c = chunk.getPos().toLong();
+			LOADED.computeIfAbsent(level.dimension(), k -> new LongOpenHashSet()).add(c);
+			BreakManager.onChunkLoad(level, c);
+		});
 		ServerChunkEvents.CHUNK_UNLOAD.register((level, chunk) -> {
 			LongOpenHashSet set = LOADED.get(level.dimension());
 			if (set != null) set.remove(chunk.getPos().toLong());
