@@ -1,0 +1,12 @@
+{
+  "breakeverywhere.group.leaves": "всю листву",
+  "breakeverywhere.group.logs": "все брёвна",
+  "breakeverywhere.start": "Ломаю %s по всему миру (загружено чанков: %s)...",
+  "breakeverywhere.progress": "Ломаю %s: %s блоков, чанк %s/%s",
+  "breakeverywhere.done": "Готово: %s сломано везде (%s блоков)",
+  "breakeverywhere.cmd.stopped": "Остановлено волн: %s",
+  "breakeverywhere.cmd.reload": "Настройки Break Everywhere: %s",
+  "breakeverywhere.cmd.on": "Break Everywhere: ВКЛ",
+  "breakeverywhere.cmd.off": "Break Everywhere: ВЫКЛ",
+  "breakeverywhere.cmd.status": "Break Everywhere: %s, загружено чанков: %s, идёт волн: %s. Команды: /breakall on|off|stop|reload"
+}

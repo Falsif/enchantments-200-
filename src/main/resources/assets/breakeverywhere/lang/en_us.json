@@ -1,0 +1,12 @@
+{
+  "breakeverywhere.group.leaves": "all leaves",
+  "breakeverywhere.group.logs": "all logs",
+  "breakeverywhere.start": "Breaking %s everywhere (%s loaded chunks)...",
+  "breakeverywhere.progress": "Breaking %s: %s blocks, chunk %s/%s",
+  "breakeverywhere.done": "Done: %s broken everywhere (%s blocks)",
+  "breakeverywhere.cmd.stopped": "Stopped %s running waves",
+  "breakeverywhere.cmd.reload": "Break Everywhere config: %s",
+  "breakeverywhere.cmd.on": "Break Everywhere: ON",
+  "breakeverywhere.cmd.off": "Break Everywhere: OFF",
+  "breakeverywhere.cmd.status": "Break Everywhere: %s, loaded chunks here: %s, running waves: %s. Commands: /breakall on|off|stop|reload"
+}

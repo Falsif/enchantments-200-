@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "breakeverywhere",
+  "version": "${version}",
+  "name": "Break Everywhere",
+  "description": "Break a block and the same block breaks everywhere in all loaded chunks. Break leaves - all leaves in the world go. Break a log - every tree loses its logs.",
+  "authors": ["LUNEXA"],
+  "contact": {
+    "homepage": "https://www.youtube.com/@LUNEXAK-l7m"
+  },
+  "license": "MIT",
+  "icon": "assets/breakeverywhere/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.lunexa.breakeverywhere.BreakEverywhere"]
+  },
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
