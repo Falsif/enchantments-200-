@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 public abstract class EnchantmentHelperMixin {
 
 	/** Safety caps for effects that would break the game at level 200 (frost walker radius, riptide...). */
-	@ModifyArgs(method = "runIterationOnItem*", at = @At(value = "INVOKE",
+	@ModifyArgs(method = "runIterationOnItem(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentVisitor;)V", at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentVisitor;accept(Lnet/minecraft/core/Holder;I)V"))
 	private static void e200$capLevel(Args args) {
 		Holder<Enchantment> holder = args.get(0);
@@ -27,7 +27,7 @@ public abstract class EnchantmentHelperMixin {
 		args.set(1, E200Levels.effectiveLevel(holder, level));
 	}
 
-	@ModifyArgs(method = "runIterationOnItem*", at = @At(value = "INVOKE",
+	@ModifyArgs(method = "runIterationOnItem(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/EquipmentSlot;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentInSlotVisitor;)V", at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentInSlotVisitor;accept(Lnet/minecraft/core/Holder;ILnet/minecraft/world/item/enchantment/EnchantedItemInUse;)V"))
 	private static void e200$capLevelInSlot(Args args) {
 		Holder<Enchantment> holder = args.get(0);

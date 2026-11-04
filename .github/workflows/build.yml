@@ -30,7 +30,11 @@ jobs:
           PROPS=""
           [ -n "$LOADER" ] && PROPS="$PROPS -Ploader_version=$LOADER"
           [ -n "$FAPI" ] && PROPS="$PROPS -Pfabric_version=$FAPI"
-          echo "Loader=$LOADER FabricAPI=$FAPI"
+          INSTALLER=$(curl -fsS https://meta.fabricmc.net/v2/versions/installer | jq -r '[.[] | select(.stable)][0].version' || true)
+          echo "Loader=$LOADER FabricAPI=$FAPI Installer=$INSTALLER"
+          echo "LOADER=$LOADER" >> "$GITHUB_ENV"
+          echo "FAPI=$FAPI" >> "$GITHUB_ENV"
+          echo "INSTALLER=$INSTALLER" >> "$GITHUB_ENV"
           echo "PROPS=$PROPS" >> "$GITHUB_ENV"
 
       - name: Build jar
@@ -48,6 +52,23 @@ jobs:
           echo "================ REPORT ================"
           cat run-test/selftest-report.txt || echo "NO REPORT (server crashed?)"
           grep -q "^RESULT: PASSED" run-test/selftest-report.txt
+
+      - name: Self test of the RELEASE jar on a normal Fabric server
+        run: |
+          mkdir -p prod/mods && cd prod
+          curl -fsSL -o server.jar "https://meta.fabricmc.net/v2/versions/loader/1.21.1/$LOADER/$INSTALLER/server/jar"
+          curl -fsSL -o mods/fabric-api.jar "https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/$FAPI/fabric-api-$FAPI.jar"
+          cp $(ls ../build/libs/*.jar | grep -v -- '-sources' | head -1) mods/
+          echo "eula=true" > eula.txt
+          cp ../run-test/server.properties .
+          timeout 900 java -Xmx2G -De200.selftest=true -jar server.jar nogui > prod-console.log 2>&1 || true
+          tail -n 40 prod-console.log
+          echo "================ MIXIN ERRORS ================"
+          grep -E "Caused by|InjectionError|InvalidInjection" prod-console.log logs/latest.log 2>/dev/null | sort -u | head -20 || true
+          echo "================ REPORT (release jar) ================"
+          cat selftest-report.txt || echo "NO REPORT (server crashed?)"
+          grep -q "^RESULT: PASSED" selftest-report.txt
+          cp selftest-report.txt ../run-test/selftest-report-release.txt
 
       - name: Upload jar and report
         if: always()
@@ -67,7 +88,7 @@ jobs:
         run: |
           JAR=$(ls build/libs/*.jar | grep -v -- '-sources' | head -1)
           TAG="v1.0.0-build${{ github.run_number }}"
-          gh release create "$TAG" "$JAR" run-test/selftest-report.txt \
+          gh release create "$TAG" "$JAR" run-test/selftest-report.txt run-test/selftest-report-release.txt \
             --title "Enchantments 200 for Fabric 1.21.1 (build ${{ github.run_number }})" \
             --notes "Self test passed on a real Minecraft 1.21.1 server. Put the .jar into .minecraft/mods together with Fabric API."
 
@@ -75,7 +96,7 @@ jobs:
         if: success()
         run: |
           JAR=$(ls build/libs/*.jar | grep -v -- '-sources' | head -1)
-          mkdir /tmp/pub && cp "$JAR" run-test/selftest-report.txt /tmp/pub/
+          mkdir /tmp/pub && cp "$JAR" run-test/selftest-report.txt run-test/selftest-report-release.txt /tmp/pub/
           cd /tmp/pub
           git init -q -b builds
           git config user.name "github-actions"
