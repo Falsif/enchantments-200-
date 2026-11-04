@@ -1,0 +1,106 @@
+[PASS] mixin targets load -> ok
+[PASS] mixin audit -> ok
+[PASS] enchantment minecraft:aqua_affinity -> max=1000000000 name='Aqua Affinity 1 000 000 000' book='Book: Aqua Affinity 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:bane_of_arthropods -> max=1000000000 name='Bane of Arthropods 1 000 000 000' book='Book: Bane of Arthropods 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:binding_curse -> max=1000000000 name='Curse of Binding 1 000 000 000' book='Book: Curse of Binding 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:blast_protection -> max=1000000000 name='Blast Protection 1 000 000 000' book='Book: Blast Protection 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:breach -> max=1000000000 name='Breach 1 000 000 000' book='Book: Breach 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:channeling -> max=1000000000 name='Channeling 1 000 000 000' book='Book: Channeling 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:density -> max=1000000000 name='Density 1 000 000 000' book='Book: Density 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:depth_strider -> max=1000000000 name='Depth Strider 1 000 000 000' book='Book: Depth Strider 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:efficiency -> max=1000000000 name='Efficiency 1 000 000 000' book='Book: Efficiency 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:feather_falling -> max=1000000000 name='Feather Falling 1 000 000 000' book='Book: Feather Falling 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:fire_aspect -> max=1000000000 name='Fire Aspect 1 000 000 000' book='Book: Fire Aspect 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:fire_protection -> max=1000000000 name='Fire Protection 1 000 000 000' book='Book: Fire Protection 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:flame -> max=1000000000 name='Flame 1 000 000 000' book='Book: Flame 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:fortune -> max=1000000000 name='Fortune 1 000 000 000' book='Book: Fortune 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:frost_walker -> max=1000000000 name='Frost Walker 1 000 000 000' book='Book: Frost Walker 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:impaling -> max=1000000000 name='Impaling 1 000 000 000' book='Book: Impaling 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:infinity -> max=1000000000 name='Infinity 1 000 000 000' book='Book: Infinity 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:knockback -> max=1000000000 name='Knockback 1 000 000 000' book='Book: Knockback 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:looting -> max=1000000000 name='Looting 1 000 000 000' book='Book: Looting 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:loyalty -> max=1000000000 name='Loyalty 1 000 000 000' book='Book: Loyalty 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:luck_of_the_sea -> max=1000000000 name='Luck of the Sea 1 000 000 000' book='Book: Luck of the Sea 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:lure -> max=1000000000 name='Lure 1 000 000 000' book='Book: Lure 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:mending -> max=1000000000 name='Mending 1 000 000 000' book='Book: Mending 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:multishot -> max=1000000000 name='Multishot 1 000 000 000' book='Book: Multishot 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:piercing -> max=1000000000 name='Piercing 1 000 000 000' book='Book: Piercing 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:power -> max=1000000000 name='Power 1 000 000 000' book='Book: Power 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:projectile_protection -> max=1000000000 name='Projectile Protection 1 000 000 000' book='Book: Projectile Protection 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:protection -> max=1000000000 name='Protection 1 000 000 000' book='Book: Protection 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:punch -> max=1000000000 name='Punch 1 000 000 000' book='Book: Punch 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:quick_charge -> max=1000000000 name='Quick Charge 1 000 000 000' book='Book: Quick Charge 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:respiration -> max=1000000000 name='Respiration 1 000 000 000' book='Book: Respiration 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:riptide -> max=1000000000 name='Riptide 1 000 000 000' book='Book: Riptide 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:sharpness -> max=1000000000 name='Sharpness 1 000 000 000' book='Book: Sharpness 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:silk_touch -> max=1000000000 name='Silk Touch 1 000 000 000' book='Book: Silk Touch 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:smite -> max=1000000000 name='Smite 1 000 000 000' book='Book: Smite 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:soul_speed -> max=1000000000 name='Soul Speed 1 000 000 000' book='Book: Soul Speed 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:sweeping_edge -> max=1000000000 name='Sweeping Edge 1 000 000 000' book='Book: Sweeping Edge 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:swift_sneak -> max=1000000000 name='Swift Sneak 1 000 000 000' book='Book: Swift Sneak 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:thorns -> max=1000000000 name='Thorns 1 000 000 000' book='Book: Thorns 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:unbreaking -> max=1000000000 name='Unbreaking 1 000 000 000' book='Book: Unbreaking 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:vanishing_curse -> max=1000000000 name='Curse of Vanishing 1 000 000 000' book='Book: Curse of Vanishing 1 000 000 000' saved=1000000000
+[PASS] enchantment minecraft:wind_burst -> max=1000000000 name='Wind Burst 1 000 000 000' book='Book: Wind Burst 1 000 000 000' saved=1000000000
+[PASS] number of enchantments >= 39 -> 42
+[PASS] Sharpness CC extra damage -> V=4.0 CC=101.5
+[PASS] Smite CC vs zombie -> 501.0
+[PASS] Protection CC points -> 200.0
+[PASS] Protection CC: 100 damage becomes -> 4.140679
+[PASS] Protection IV still vanilla (16 pts = 64%) -> 36.0
+[PASS] Feather Falling CC + Protection CC vs fall -> 800.0
+[PASS] Unbreaking CC: 10000 durability hits become -> 40
+[PASS] Efficiency CC mining bonus -> 40001.0
+[PASS] Fortune CC: diamonds from 30 ores -> 3201
+[PASS] Looting CC level read by loot tables -> ok
+[PASS] Knockback CC (safety cap 30) -> 30.0
+[PASS] Power CC arrow damage -> 102.0
+[PASS] Riptide CC capped (no flying out of the world) -> 8.25
+[PASS] Multishot CC capped -> 33
+[PASS] Frost Walker effect level capped -> 16
+[PASS] Sharpness not capped -> ok
+[PASS] anvil 100 + 100 = 200 -> result=minecraft:enchanted_book lvl 200 cost=30
+[PASS] anvil 64 + 64 = 128 -> result=minecraft:enchanted_book lvl 128 cost=30
+[PASS] anvil 150 + 150 = 300 -> result=minecraft:enchanted_book lvl 300 cost=30
+[PASS] anvil 500M + 500M = 1 000 000 000 -> result=minecraft:enchanted_book lvl 1000000000 cost=30
+[PASS] anvil 600M + 600M = max (no overflow) -> result=minecraft:enchanted_book lvl 1000000000 cost=30
+[PASS] anvil sword Sharpness 1 000 000 000 + book V -> result=minecraft:netherite_sword lvl 1000000000 cost=30
+[PASS] anvil book with 4 billion-level enchantments onto sword -> result=minecraft:diamond_sword lvl 1000000000 cost=30 looting=1000000000 unbreaking=1000000000
+[PASS] anvil: incompatible Smite not added to Sharpness sword -> result=0 minecraft:air
+[PASS] anvil sword V + book CL = CLV -> result=minecraft:diamond_sword lvl 155 cost=30
+[PASS] anvil book CC onto plain sword -> result=minecraft:diamond_sword lvl 200 cost=30
+[PASS] anvil book Protection CC onto chestplate -> result=minecraft:netherite_chestplate lvl 200 cost=30
+[PASS] natural max of Sharpness = 5 -> 5
+[PASS] enchanting table still gives vanilla levels -> highest=5
+[PASS] max level is 1 000 000 000 -> 1000000000
+[PASS] Sharpness 1 000 000 000 extra damage -> 5.0E8
+[PASS] Protection 1 000 000 000: 100 damage becomes -> 1.0
+[PASS] Efficiency 1 000 000 000 is positive (no overflow) -> 9.999999843067494E17
+[PASS] attribute bonus sign at 1 000 000 000: aqua_affinity minecraft:player.submerged_mining_speed -> lvl1=4.0 lvlB=4.0E9
+[PASS] attribute bonus sign at 1 000 000 000: blast_protection minecraft:generic.explosion_knockback_resistance -> lvl1=0.15 lvlB=1.5E8
+[PASS] attribute bonus sign at 1 000 000 000: depth_strider minecraft:generic.water_movement_efficiency -> lvl1=0.33333334 lvlB=3.3333334E8
+[PASS] attribute bonus sign at 1 000 000 000: efficiency minecraft:player.mining_efficiency -> lvl1=2.0 lvlB=1.0E18
+[PASS] attribute bonus sign at 1 000 000 000: fire_protection minecraft:generic.burning_time -> lvl1=-0.15 lvlB=-1.5E8
+[PASS] attribute bonus sign at 1 000 000 000: respiration minecraft:generic.oxygen_bonus -> lvl1=1.0 lvlB=1.0E9
+[PASS] attribute bonus sign at 1 000 000 000: sweeping_edge minecraft:player.sweeping_damage_ratio -> lvl1=0.5 lvlB=1.0
+[PASS] attribute bonus sign at 1 000 000 000: swift_sneak minecraft:player.sneaking_speed -> lvl1=0.15 lvlB=1.5E8
+[PASS] Unbreaking 1 000 000 000: 10000 hits become -> 0
+[PASS] Fortune 1 000 000 000 (effect cap 1000) is fast and safe -> 311 diamonds
+[PASS] sword with Sharpness 1 000 000 000 saves and loads -> {components:{"minecraft:enchantments":{levels:{"minecraft:sharpness":1000000000}}},count:1,id:"minecraft:netherite_sword"}
+[PASS] name shows 1 000 000 000 -> Sharpness 1 000 000 000
+[PASS] spawn egg registered -> enchantments200:billion_zombie_spawn_egg
+[PASS] billion zombie spawned -> Zombie['Billion Zombie'/7, l='ServerLevel[world]', x=0.50, y=-60.00, z=0.50]
+[PASS] billion zombie: netherite sword Sharpness 1 000 000 000 -> 1 minecraft:netherite_sword lvl=1000000000
+[PASS] billion zombie: full netherite armor -> ok
+[PASS] billion zombie: does not despawn -> ok
+[PASS] billion zombie one-shots an armored mob -> hit=true health=0.0
+[PASS] creative tabs build fast -> 127 ms, search tab items=2046
+[PASS] roman numerals -> CC
+[PASS] /enchant200 help -> ok
+[PASS] /enchant200 list -> ok
+[PASS] /enchant200 reload -> ok
+[PASS] /enchant200 give parses 'sharpness 200' -> ok
+[PASS] /enchant200 max parses -> ok
+[PASS] creative tab registered -> ok
+
+RESULT: PASSED 104 passed, 0 failed
