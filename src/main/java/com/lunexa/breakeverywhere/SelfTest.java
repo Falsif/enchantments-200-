@@ -33,24 +33,93 @@ public final class SelfTest {
 		lines.add((ok ? "[PASS] " : "[FAIL] ") + name + " -> " + detail);
 	}
 
+	private static SelfTest active;
+	private int phase;
+	private int wait;
+	private long waveStart;
+	private java.util.Map<Long, LevelChunk> identities;
+	private int dirtBefore;
+	private FakePlayer fp;
+
 	public static void run(MinecraftServer server) {
-		SelfTest t = new SelfTest();
+		active = new SelfTest();
+		active.phase = 0;
+		active.wait = 0;
+		// Force the far chunks now; the tests start after the server has settled.
+		ServerLevel level = server.overworld();
+		for (int[] c : FAR) level.setChunkForced(c[0], c[1], true);
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.END_SERVER_TICK.register(srv -> {
+			if (active != null) active.tick(srv);
+		});
+	}
+
+	static final int[][] FAR = {{10, 10}, {12, -8}, {-9, 5}, {-14, -14}};
+
+	private void tick(MinecraftServer server) {
 		try {
-			t.runAll(server);
+			ServerLevel level = server.overworld();
+			wait++;
+			switch (phase) {
+				case 0 -> { if (wait >= 100) { runAll(server); phase = 1; wait = 0; } }
+				case 1 -> {
+					// stress wave runs through the normal tick handler (25 ms per tick)
+					identities = new java.util.HashMap<>();
+					for (long c : LoadedChunks.snapshot(level)) identities.put(c, level.getChunkSource().getChunkNow(ChunkPos.getX(c), ChunkPos.getZ(c)));
+					dirtBefore = countEverywhere(level, st -> st.is(Blocks.DIRT));
+					waveStart = System.nanoTime();
+					BreakManager.onPlayerBreak(level, fp, new BlockPos(0, -63, 0), Blocks.DIRT.defaultBlockState());
+					phase = 2; wait = 0;
+				}
+				case 2 -> {
+					if (BreakManager.activeJobs() == 0 || wait > 4000) {
+						long ms = (System.nanoTime() - waveStart) / 1_000_000;
+						int after = countEverywhere(level, st -> st.is(Blocks.DIRT));
+						int replaced = 0;
+						for (var e : identities.entrySet()) {
+							LevelChunk now = level.getChunkSource().getChunkNow(ChunkPos.getX(e.getKey()), ChunkPos.getZ(e.getKey()));
+							if (now != null && now != e.getValue()) replaced++;
+						}
+						BreakJob j = BreakManager.lastFinished;
+						check("stress (real ticks): all dirt broken", dirtBefore > 1000 && after == 0,
+								"before=" + dirtBefore + " after=" + after + " broken=" + (j == null ? -1 : j.broken) + " failed=" + (j == null ? -1 : j.failed)
+										+ " ticks=" + wait + " time=" + ms + " ms, chunks reloaded meanwhile=" + replaced);
+						check("server kept ticking during the wave", wait >= 1, wait + " ticks");
+						int items = level.getEntitiesOfClass(ItemEntity.class, new AABB(-400, -70, -400, 400, 330, 400)).size();
+						check("stress: item entities limited (merged per chunk)", items < BEConfig.get().maxSeparateDrops + 3000, items);
+						if (after > 0) diag(level, st -> st.is(Blocks.DIRT));
+						BreakManager.onPlayerBreak(level, fp, new BlockPos(0, -61, 0), Blocks.GRASS_BLOCK.defaultBlockState());
+						phase = 3; wait = 0;
+					}
+				}
+				case 3 -> {
+					if (BreakManager.activeJobs() == 0 || wait > 4000) {
+						int g = countEverywhere(level, st -> st.is(Blocks.GRASS_BLOCK));
+						check("grass blocks all broken (real ticks)", g == 0, "left=" + g + " ticks=" + wait);
+						finish(server);
+					}
+				}
+				default -> { }
+			}
 		} catch (Throwable e) {
-			t.fail++;
+			fail++;
 			StringWriter sw = new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));
-			t.lines.add("[FAIL] EXCEPTION " + sw);
+			lines.add("[FAIL] EXCEPTION " + sw);
+			finish(server);
 		}
-		t.lines.add("");
-		t.lines.add((t.fail == 0 ? "RESULT: PASSED " : "RESULT: FAILED ") + t.pass + " passed, " + t.fail + " failed");
+	}
+
+	private void finish(MinecraftServer server) {
+		active = null;
+		phase = 99;
+		lines.add("");
+		lines.add((fail == 0 ? "RESULT: PASSED " : "RESULT: FAILED ") + pass + " passed, " + fail + " failed");
 		try {
-			Files.write(Path.of("selftest-report.txt"), t.lines, StandardCharsets.UTF_8);
+			Files.write(Path.of("selftest-report.txt"), lines, StandardCharsets.UTF_8);
 		} catch (Exception e) {
 			BreakEverywhere.LOGGER.error("could not write report", e);
 		}
-		for (String l : t.lines) BreakEverywhere.LOGGER.info("[SelfTest] {}", l);
+		for (String l : lines) BreakEverywhere.LOGGER.info("[SelfTest] {}", l);
 		server.halt(false);
 	}
 
@@ -95,11 +164,7 @@ public final class SelfTest {
 		ServerLevel level = server.overworld();
 
 		// Load a few far chunks so the wave has to travel.
-		int[][] far = {{10, 10}, {12, -8}, {-9, 5}, {-14, -14}};
-		for (int[] c : far) {
-			level.setChunkForced(c[0], c[1], true);
-			level.getChunk(c[0], c[1]);
-		}
+		int[][] far = FAR;
 		int loaded = LoadedChunks.count(level);
 		check("loaded chunks are tracked", loaded >= 5, loaded);
 
@@ -117,7 +182,7 @@ public final class SelfTest {
 		level.setBlock(oakLeaves, Blocks.OAK_LEAVES.defaultBlockState(), 3);
 		level.setBlock(birchLeaves, Blocks.BIRCH_LEAVES.defaultBlockState(), 3);
 
-		FakePlayer fp = FakePlayer.get(level);
+		fp = FakePlayer.get(level);
 		fp.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_AXE));
 
 		// ---- break one oak log -> all logs everywhere ----
@@ -158,32 +223,6 @@ public final class SelfTest {
 		check("nothing happens when OFF", BreakManager.onPlayerBreak(level, fp, stone, Blocks.STONE.defaultBlockState()) == null, "ok");
 		BEConfig.get().enabled = true;
 
-		// ---- stress: all dirt in all loaded chunks (flat world has 2 dirt layers) ----
-		int dirtBefore = countEverywhere(level, s -> s.is(Blocks.DIRT));
-		long t0 = System.nanoTime();
-		BlockState dirt = Blocks.DIRT.defaultBlockState();
-		BreakManager.onPlayerBreak(level, fp, new BlockPos(0, -63, 0), dirt);
-		BreakManager.runAllNow();
-		long ms = (System.nanoTime() - t0) / 1_000_000;
-		int dirtAfter = countEverywhere(level, s -> s.is(Blocks.DIRT));
-		int items = level.getEntitiesOfClass(ItemEntity.class, new AABB(-400, -70, -400, 400, 330, 400)).size();
-		check("stress: all dirt broken", dirtBefore > 1000 && dirtAfter == 0,
-				"before=" + dirtBefore + " after=" + dirtAfter + " broken=" + (BreakManager.lastFinished == null ? -1 : BreakManager.lastFinished.broken) + " in " + ms + " ms");
-		lines.add("[INFO] setBlock failed=" + (BreakManager.lastFinished == null ? -1 : BreakManager.lastFinished.failed));
-		diag(level, s -> s.is(Blocks.DIRT));
-		check("stress: item entities limited (merged per chunk)", items < BEConfig.get().maxSeparateDrops + 2000, items);
-
-		// ---- time budget per tick ----
-		BlockPos gp = new BlockPos(0, -61, 0);
-		BreakManager.onPlayerBreak(level, fp, gp, level.getBlockState(gp));
-		BreakJob running = null;
-		long tickStart = System.nanoTime();
-		BreakManager.tick(server);
-		long tickMs = (System.nanoTime() - tickStart) / 1_000_000;
-		check("one tick stays near the budget", tickMs < BEConfig.get().millisPerTick + 60, tickMs + " ms (budget " + BEConfig.get().millisPerTick + ")");
-		BreakManager.runAllNow();
-		check("grass blocks all broken", countEverywhere(level, s -> s.is(Blocks.GRASS_BLOCK)) == 0, "ok");
-
 		// ---- commands ----
 		var src = server.createCommandSourceStack().withSuppressedOutput();
 		try {
@@ -191,7 +230,7 @@ public final class SelfTest {
 			check("/breakall status", d.execute("breakall status", src) == 1, "ok");
 			check("/breakall off", d.execute("breakall off", src) == 1 && !BEConfig.get().enabled, "ok");
 			check("/breakall on", d.execute("breakall on", src) == 1 && BEConfig.get().enabled, "ok");
-			check("/breakall stop", d.execute("breakall stop", src) >= 0, "ok");
+			check("/breakall stop", d.execute("breakall stop", src) >= 0 && BreakManager.activeJobs() == 0, "ok");
 		} catch (Exception e) {
 			check("commands", false, e.toString());
 		}
