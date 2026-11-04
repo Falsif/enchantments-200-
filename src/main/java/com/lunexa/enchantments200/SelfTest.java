@@ -254,11 +254,11 @@ public final class SelfTest {
 			check("Efficiency 1 000 000 000 is positive (no overflow)", effB[0] > 1.0E17, effB[0]);
 			// Every attribute bonus of every enchantment keeps its sign at 1 000 000 000.
 			for (Holder.Reference<Enchantment> h : reg.holders().toList()) {
-				for (var eff : h.value().getEffects(net.minecraft.world.item.enchantment.EnchantmentEffectComponents.ATTRIBUTES)) {
-					float a1 = eff.amount().calculate(1);
-					float aB = eff.amount().calculate(B);
+				for (var ae : h.value().getEffects(net.minecraft.world.item.enchantment.EnchantmentEffectComponents.ATTRIBUTES)) {
+					float a1 = ae.amount().calculate(1);
+					float aB = ae.amount().calculate(B);
 					boolean ok = Float.isFinite(aB) && (a1 == 0 || Math.signum(a1) == Math.signum(aB));
-					check("attribute bonus sign at 1 000 000 000: " + h.key().location().getPath() + " " + eff.attribute().getRegisteredName(), ok, "lvl1=" + a1 + " lvlB=" + aB);
+					check("attribute bonus sign at 1 000 000 000: " + h.key().location().getPath() + " " + ae.attribute().getRegisteredName(), ok, "lvl1=" + a1 + " lvlB=" + aB);
 				}
 			}
 		}
