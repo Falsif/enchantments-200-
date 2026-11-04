@@ -35,6 +35,19 @@ public abstract class EnchantmentHelperMixin {
 		args.set(1, E200Levels.effectiveLevel(holder, level));
 	}
 
+	/** Loot tables (Fortune, Looting) read the level directly, so the safety caps apply here too. */
+	@Inject(method = "getItemEnchantmentLevel", at = @At("RETURN"), cancellable = true)
+	private static void e200$capItemLevel(Holder<Enchantment> holder, ItemStack stack, CallbackInfoReturnable<Integer> cir) {
+		int v = cir.getReturnValueI();
+		if (v > 1) cir.setReturnValue(E200Levels.effectiveLevel(holder, v));
+	}
+
+	@Inject(method = "getEnchantmentLevel", at = @At("RETURN"), cancellable = true)
+	private static void e200$capEntityLevel(Holder<Enchantment> holder, net.minecraft.world.entity.LivingEntity entity, CallbackInfoReturnable<Integer> cir) {
+		int v = cir.getReturnValueI();
+		if (v > 1) cir.setReturnValue(E200Levels.effectiveLevel(holder, v));
+	}
+
 	/** Enchanting table keeps vanilla levels (configurable). The level loop is inside a lambda, so we mark the whole call. */
 	@Inject(method = "getAvailableEnchantmentResults", at = @At("HEAD"))
 	private static void e200$tableStart(int power, ItemStack stack, Stream<Holder<Enchantment>> pool, CallbackInfoReturnable<List<EnchantmentInstance>> cir) {
