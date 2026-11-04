@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.lunexa.enchantments200.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "AnvilMenuMixin",
+    "CombatRulesMixin",
+    "EnchantmentHelperMixin",
+    "EnchantmentMixin",
+    "EnchantRandomlyFunctionMixin",
+    "ItemMixin",
+    "VillagerTradesMixin"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

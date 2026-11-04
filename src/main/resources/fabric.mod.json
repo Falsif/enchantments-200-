@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "enchantments200",
+  "version": "${version}",
+  "name": "Enchantments 200",
+  "description": "Every vanilla enchantment goes up to level 200 (CC) and really gets stronger. Books I-CC, anvil without 'Too Expensive', /enchant200 commands, creative tab.",
+  "authors": ["LUNEXA"],
+  "contact": {
+    "homepage": "https://www.youtube.com/@LUNEXAK-l7m"
+  },
+  "license": "MIT",
+  "icon": "assets/enchantments200/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.lunexa.enchantments200.Enchantments200"],
+    "client": ["com.lunexa.enchantments200.client.Enchantments200Client"]
+  },
+  "mixins": ["enchantments200.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

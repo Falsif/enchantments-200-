@@ -1,0 +1,8 @@
+.gradle/
+build/
+run/
+run-test/
+out/
+.idea/
+*.iml
+selftest-console.log

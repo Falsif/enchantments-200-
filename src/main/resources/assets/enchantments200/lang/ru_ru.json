@@ -1,0 +1,22 @@
+{
+  "itemGroup.enchantments200.books": "Зачарования 200",
+  "item.enchantments200.book": "Книга: %s",
+  "tooltip.enchantments200.level": "Уровень %s / %s",
+  "tooltip.enchantments200.level_named": "%s: уровень %s / %s",
+  "e200.help.title": "=== Enchantments 200 (макс. уровень %s) ===",
+  "e200.help.help": "список команд",
+  "e200.help.list": "все зачарования (нажмите, чтобы получить книгу)",
+  "e200.help.give": "выдать книгу, например /enchant200 give Steve sharpness 200",
+  "e200.help.max": "книга максимального уровня (без аргумента — все книги)",
+  "e200.help.apply": "зачаровать предмет в руке напрямую",
+  "e200.help.reload": "перезагрузить config/enchantments200.json",
+  "e200.list.title": "Зачарования (%s):",
+  "e200.reload": "Настройки Enchantments 200: %s",
+  "e200.error.level": "Уровень %s выше максимального %s (см. config/enchantments200.json)",
+  "e200.error.hand": "Возьмите предмет в основную руку",
+  "e200.give.one": "Выдана книга %s игроку %s",
+  "e200.give.many": "Выдана книга %s игрокам: %s",
+  "e200.max.one": "Получена книга %s",
+  "e200.max.all": "Получено книг максимального уровня: %s (лишние выпали под ноги)",
+  "e200.apply": "Наложено: %s"
+}

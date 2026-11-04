@@ -1,0 +1,22 @@
+{
+  "itemGroup.enchantments200.books": "Enchantments 200",
+  "item.enchantments200.book": "Book: %s",
+  "tooltip.enchantments200.level": "Level %s / %s",
+  "tooltip.enchantments200.level_named": "%s: level %s / %s",
+  "e200.help.title": "=== Enchantments 200 (max level %s) ===",
+  "e200.help.help": "list of commands",
+  "e200.help.list": "all enchantments (click one to get a book)",
+  "e200.help.give": "give a book, e.g. /enchant200 give Steve sharpness 200",
+  "e200.help.max": "get a max-level book (no argument = all books)",
+  "e200.help.apply": "enchant the item in your hand directly",
+  "e200.help.reload": "reload config/enchantments200.json",
+  "e200.list.title": "Enchantments (%s):",
+  "e200.reload": "Enchantments 200 config: %s",
+  "e200.error.level": "Level %s is above the max level %s (see config/enchantments200.json)",
+  "e200.error.hand": "Hold an item in your main hand",
+  "e200.give.one": "Gave a book %s to %s",
+  "e200.give.many": "Gave a book %s to %s players",
+  "e200.max.one": "Got a book %s",
+  "e200.max.all": "Got %s max-level books (extra ones are dropped at your feet)",
+  "e200.apply": "Applied %s"
+}
