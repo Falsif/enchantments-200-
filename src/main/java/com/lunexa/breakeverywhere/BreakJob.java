@@ -104,7 +104,15 @@ public final class BreakJob {
 		if (found.isEmpty()) return;
 
 		int maxSeparate = Math.max(0, BEConfig.get().maxSeparateDrops);
-		int flags = BEConfig.get().updateNeighbors ? Block.UPDATE_ALL : Block.UPDATE_CLIENTS;
+		int flags = BEConfig.get().updateNeighbors ? Block.UPDATE_ALL : (Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+		// Next to a chunk that is not loaded, updating neighbors would load (and generate) that chunk,
+		// which then joins the wave and loads the next one... an endless chain. So no neighbor updates there.
+		int edgeFlags = Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE;
+		boolean west = level.getChunkSource().getChunkNow(cx - 1, cz) != null;
+		boolean east = level.getChunkSource().getChunkNow(cx + 1, cz) != null;
+		boolean north = level.getChunkSource().getChunkNow(cx, cz - 1) != null;
+		boolean south = level.getChunkSource().getChunkNow(cx, cz + 1) != null;
+		boolean allNeighbors = west && east && north && south;
 		List<ItemStack> merged = new ArrayList<>();
 		BlockPos mergedPos = null;
 
@@ -123,7 +131,13 @@ public final class BreakJob {
 				}
 				state.spawnAfterBreak(level, pos, tool, true);
 			}
-			if (level.setBlock(pos, state.getFluidState().createLegacyBlock(), flags)) {
+			int f = flags;
+			if (!allNeighbors) {
+				int lx = pos.getX() & 15;
+				int lz = pos.getZ() & 15;
+				if ((lx == 0 && !west) || (lx == 15 && !east) || (lz == 0 && !north) || (lz == 15 && !south)) f = edgeFlags;
+			}
+			if (level.setBlock(pos, state.getFluidState().createLegacyBlock(), f)) {
 				broken++;
 			} else {
 				failed++;
