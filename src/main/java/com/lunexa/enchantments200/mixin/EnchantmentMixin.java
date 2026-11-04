@@ -1,6 +1,7 @@
 package com.lunexa.enchantments200.mixin;
 
 import com.lunexa.enchantments200.E200Config;
+import com.lunexa.enchantments200.E200Levels;
 import com.lunexa.enchantments200.E200Text;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -17,6 +18,10 @@ public abstract class EnchantmentMixin {
 	@Inject(method = "getMaxLevel", at = @At("HEAD"), cancellable = true)
 	private void e200$maxLevel(CallbackInfoReturnable<Integer> cir) {
 		int vanilla = ((Enchantment) (Object) this).definition().maxLevel();
+		if (E200Levels.inNatural()) {
+			cir.setReturnValue(vanilla);
+			return;
+		}
 		cir.setReturnValue(Math.max(vanilla, E200Config.get().clampedMaxLevel()));
 	}
 

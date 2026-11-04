@@ -7,7 +7,12 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import java.util.List;
+import java.util.stream.Stream;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(EnchantmentHelper.class)
@@ -30,10 +35,14 @@ public abstract class EnchantmentHelperMixin {
 		args.set(1, E200Levels.effectiveLevel(holder, level));
 	}
 
-	/** Enchanting table keeps vanilla levels (configurable). */
-	@Redirect(method = "getAvailableEnchantmentResults", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/world/item/enchantment/Enchantment;getMaxLevel()I"))
-	private static int e200$tableMax(Enchantment enchantment) {
-		return E200Levels.naturalMax(enchantment);
+	/** Enchanting table keeps vanilla levels (configurable). The level loop is inside a lambda, so we mark the whole call. */
+	@Inject(method = "getAvailableEnchantmentResults", at = @At("HEAD"))
+	private static void e200$tableStart(int power, ItemStack stack, Stream<Holder<Enchantment>> pool, CallbackInfoReturnable<List<EnchantmentInstance>> cir) {
+		E200Levels.beginNatural();
+	}
+
+	@Inject(method = "getAvailableEnchantmentResults", at = @At("RETURN"))
+	private static void e200$tableEnd(int power, ItemStack stack, Stream<Holder<Enchantment>> pool, CallbackInfoReturnable<List<EnchantmentInstance>> cir) {
+		E200Levels.endNatural();
 	}
 }

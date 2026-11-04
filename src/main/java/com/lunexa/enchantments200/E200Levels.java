@@ -15,6 +15,22 @@ public final class E200Levels {
 		return e.definition().maxLevel();
 	}
 
+	private static final ThreadLocal<int[]> NATURAL = ThreadLocal.withInitial(() -> new int[1]);
+
+	public static void beginNatural() {
+		NATURAL.get()[0]++;
+	}
+
+	public static void endNatural() {
+		int[] d = NATURAL.get();
+		if (d[0] > 0) d[0]--;
+	}
+
+	/** True while vanilla code picks levels for the enchanting table (only when the config asks for vanilla levels). */
+	public static boolean inNatural() {
+		return NATURAL.get()[0] > 0 && E200Config.get().vanillaLevelsForNaturalLoot;
+	}
+
 	/** Max level used for enchanting table / villagers / loot. */
 	public static int naturalMax(Enchantment e) {
 		return E200Config.get().vanillaLevelsForNaturalLoot ? vanillaMax(e) : e.getMaxLevel();
