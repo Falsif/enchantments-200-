@@ -49,7 +49,7 @@ public final class E200Commands {
 						.then(Commands.argument("targets", EntityArgument.players())
 								.then(Commands.argument("enchantment", ResourceArgument.resource(ctx, Registries.ENCHANTMENT))
 										.executes(c -> give(c, -1))
-										.then(Commands.argument("level", IntegerArgumentType.integer(1, 255))
+										.then(Commands.argument("level", IntegerArgumentType.integer(1))
 												.executes(c -> give(c, IntegerArgumentType.getInteger(c, "level")))))))
 				.then(Commands.literal("max")
 						.requires(s -> s.hasPermission(2))
@@ -60,7 +60,7 @@ public final class E200Commands {
 						.requires(s -> s.hasPermission(2))
 						.then(Commands.argument("enchantment", ResourceArgument.resource(ctx, Registries.ENCHANTMENT))
 								.executes(c -> apply(c, -1))
-								.then(Commands.argument("level", IntegerArgumentType.integer(1, 255))
+								.then(Commands.argument("level", IntegerArgumentType.integer(1))
 										.executes(c -> apply(c, IntegerArgumentType.getInteger(c, "level")))))));
 	}
 

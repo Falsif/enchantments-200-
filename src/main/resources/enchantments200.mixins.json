@@ -6,9 +6,12 @@
   "mixins": [
     "AnvilMenuMixin",
     "CombatRulesMixin",
+    "CreativeModeTabsMixin",
     "EnchantmentHelperMixin",
     "EnchantmentMixin",
     "EnchantRandomlyFunctionMixin",
+    "ItemEnchantmentsMixin",
+    "ItemEnchantmentsMutableMixin",
     "ItemMixin",
     "VillagerTradesMixin"
   ],

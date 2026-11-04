@@ -18,5 +18,7 @@
   "e200.give.many": "Gave a book %s to %s players",
   "e200.max.one": "Got a book %s",
   "e200.max.all": "Got %s max-level books (extra ones are dropped at your feet)",
-  "e200.apply": "Applied %s"
+  "e200.apply": "Applied %s",
+  "item.enchantments200.billion_zombie_spawn_egg": "Billion Zombie Spawn Egg",
+  "entity.enchantments200.billion_zombie": "Billion Zombie"
 }

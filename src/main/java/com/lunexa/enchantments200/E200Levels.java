@@ -16,6 +16,17 @@ public final class E200Levels {
 	}
 
 	private static final ThreadLocal<int[]> NATURAL = ThreadLocal.withInitial(() -> new int[1]);
+	private static final ThreadLocal<int[]> FORCED = ThreadLocal.withInitial(() -> new int[1]);
+
+	/** Vanilla creative tabs list every level 1..max: with a billion that would freeze the game. */
+	public static void beginForcedVanilla() {
+		FORCED.get()[0]++;
+	}
+
+	public static void endForcedVanilla() {
+		int[] d = FORCED.get();
+		if (d[0] > 0) d[0]--;
+	}
 
 	public static void beginNatural() {
 		NATURAL.get()[0]++;
@@ -28,7 +39,7 @@ public final class E200Levels {
 
 	/** True while vanilla code picks levels for the enchanting table (only when the config asks for vanilla levels). */
 	public static boolean inNatural() {
-		return NATURAL.get()[0] > 0 && E200Config.get().vanillaLevelsForNaturalLoot;
+		return FORCED.get()[0] > 0 || (NATURAL.get()[0] > 0 && E200Config.get().vanillaLevelsForNaturalLoot);
 	}
 
 	/** Max level used for enchanting table / villagers / loot. */

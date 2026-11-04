@@ -2,6 +2,7 @@ package com.lunexa.enchantments200.client;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
@@ -13,6 +14,10 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 public class Enchantments200Client implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
+		// Spawn egg colors: zombie green with enchantment purple spots.
+		ColorProviderRegistry.ITEM.register((stack, tint) -> tint == 0 ? 0xFF2E6B2E : 0xFFB04CFF,
+				com.lunexa.enchantments200.Enchantments200.BILLION_ZOMBIE_EGG);
+
 		// Shows "Level 200 / 200" under enchanted books.
 		ItemTooltipCallback.EVENT.register((stack, context, flag, lines) -> {
 			ItemEnchantments stored = stack.get(DataComponents.STORED_ENCHANTMENTS);

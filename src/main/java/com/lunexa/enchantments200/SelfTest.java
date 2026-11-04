@@ -201,7 +201,24 @@ public final class SelfTest {
 		FakePlayer fp = FakePlayer.get(level);
 		check("anvil 100 + 100 = 200", anvil(fp, E200Books.book(sharp, 100), E200Books.book(sharp, 100), sharp, 200), lastAnvil);
 		check("anvil 64 + 64 = 128", anvil(fp, E200Books.book(sharp, 64), E200Books.book(sharp, 64), sharp, 128), lastAnvil);
-		check("anvil 150 + 150 = 200 (max)", anvil(fp, E200Books.book(sharp, 150), E200Books.book(sharp, 150), sharp, 200), lastAnvil);
+		check("anvil 150 + 150 = 300", anvil(fp, E200Books.book(sharp, 150), E200Books.book(sharp, 150), sharp, 300), lastAnvil);
+		check("anvil 500M + 500M = 1 000 000 000", anvil(fp, E200Books.book(sharp, 500_000_000), E200Books.book(sharp, 500_000_000), sharp, 1_000_000_000), lastAnvil);
+		check("anvil 600M + 600M = max (no overflow)", anvil(fp, E200Books.book(sharp, 600_000_000), E200Books.book(sharp, 600_000_000), sharp, max), lastAnvil);
+		check("anvil sword Sharpness 1 000 000 000 + book V", anvil(fp, enchanted(Items.NETHERITE_SWORD, sharp, 1_000_000_000), E200Books.book(sharp, 5), sharp, max), lastAnvil);
+		{
+			ItemStack big = E200Books.book(sharp, 1_000_000_000);
+			EnchantmentHelper.updateEnchantments(big, m -> {
+				m.set(looting, 1_000_000_000);
+				m.set(unbreaking, 1_000_000_000);
+				m.set(knockback, 1_000_000_000);
+			});
+			boolean ok = anvil(fp, new ItemStack(Items.DIAMOND_SWORD), big, sharp, 1_000_000_000);
+			ItemStack out = lastOut;
+			int lo = EnchantmentHelper.getEnchantmentsForCrafting(out).getLevel(looting);
+			int un = EnchantmentHelper.getEnchantmentsForCrafting(out).getLevel(unbreaking);
+			check("anvil book with 4 billion-level enchantments onto sword", ok && lo == 1_000_000_000 && un == 1_000_000_000, lastAnvil + " looting=" + lo + " unbreaking=" + un);
+		}
+		check("anvil: incompatible Smite not added to Sharpness sword", anvilEmpty(fp, enchanted(Items.DIAMOND_SWORD, sharp, 1_000_000_000), E200Books.book(smite, 1_000_000_000)), lastAnvil);
 		check("anvil sword V + book CL = CLV", anvil(fp, enchanted(Items.DIAMOND_SWORD, sharp, 5), E200Books.book(sharp, 150), sharp, 155), lastAnvil);
 		check("anvil book CC onto plain sword", anvil(fp, new ItemStack(Items.DIAMOND_SWORD), E200Books.book(sharp, 200), sharp, 200), lastAnvil);
 		check("anvil book Protection CC onto chestplate", anvil(fp, new ItemStack(Items.NETHERITE_CHESTPLATE), E200Books.book(prot, 200), prot, 200), lastAnvil);
@@ -219,11 +236,64 @@ public final class SelfTest {
 		}
 		check("enchanting table still gives vanilla levels", highest > 0 && highest <= 5, "highest=" + highest);
 
+		// ---- 1 000 000 000 ----
+		int B = 1_000_000_000;
+		check("max level is 1 000 000 000", max == B, max);
+		float dB = EnchantmentHelper.modifyDamage(level, enchanted(Items.NETHERITE_SWORD, sharp, B), target, melee, 1.0F);
+		check("Sharpness 1 000 000 000 extra damage", dB > 4.0E8F, dB);
+		Zombie armoredB = EntityType.ZOMBIE.create(level);
+		armoredB.setItemSlot(EquipmentSlot.CHEST, enchanted(Items.DIAMOND_CHESTPLATE, prot, B));
+		float pB = EnchantmentHelper.getDamageProtection(level, armoredB, melee);
+		float afterB = CombatRules.getDamageAfterMagicAbsorb(100.0F, pB);
+		check("Protection 1 000 000 000: 100 damage becomes", afterB > 0.5F && afterB < 2.0F, afterB);
+		check("Unbreaking 1 000 000 000: 10000 hits become", EnchantmentHelper.processDurabilityChange(level, enchanted(Items.DIAMOND_PICKAXE, unbreaking, B), 10000) == 0, "0");
+		ItemStack pickB = enchanted(Items.DIAMOND_PICKAXE, fortune, B);
+		long tF = System.nanoTime();
+		int dropsB = 0;
+		for (ItemStack drop : Block.getDrops(Blocks.DIAMOND_ORE.defaultBlockState(), level, BlockPos.ZERO, null, null, pickB)) dropsB += drop.getCount();
+		check("Fortune 1 000 000 000 (effect cap 1000) is fast and safe", dropsB >= 1 && dropsB <= 1001 && (System.nanoTime() - tF) < 2_000_000_000L, dropsB + " diamonds");
+		{
+			ItemStack sw = enchanted(Items.NETHERITE_SWORD, sharp, B);
+			Tag t2 = ItemStack.CODEC.encodeStart(ops, sw).getOrThrow();
+			ItemStack back2 = ItemStack.CODEC.parse(ops, t2).getOrThrow();
+			check("sword with Sharpness 1 000 000 000 saves and loads", EnchantmentHelper.getItemEnchantmentLevel(sharp, back2) == B, t2);
+			String n = Enchantment.getFullname(sharp, B).getString();
+			check("name shows 1 000 000 000", n.endsWith("1 000 000 000"), n);
+		}
+
+		// ---- Billion Zombie spawn egg ----
+		check("spawn egg registered", net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(Enchantments200.BILLION_ZOMBIE_EGG).toString().equals("enchantments200:billion_zombie_spawn_egg"),
+				net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(Enchantments200.BILLION_ZOMBIE_EGG));
+		BlockPos zp = level.getSharedSpawnPos();
+		Zombie bz = BillionZombie.spawn(level, zp);
+		check("billion zombie spawned", bz != null && bz.isAlive() && level.getEntity(bz.getUUID()) != null, bz);
+		ItemStack bzSword = bz.getMainHandItem();
+		check("billion zombie: netherite sword Sharpness 1 000 000 000", bzSword.is(Items.NETHERITE_SWORD) && EnchantmentHelper.getItemEnchantmentLevel(sharp, bzSword) == B,
+				bzSword + " lvl=" + EnchantmentHelper.getItemEnchantmentLevel(sharp, bzSword));
+		check("billion zombie: full netherite armor", bz.getItemBySlot(EquipmentSlot.HEAD).is(Items.NETHERITE_HELMET) && bz.getItemBySlot(EquipmentSlot.CHEST).is(Items.NETHERITE_CHESTPLATE)
+				&& bz.getItemBySlot(EquipmentSlot.LEGS).is(Items.NETHERITE_LEGGINGS) && bz.getItemBySlot(EquipmentSlot.FEET).is(Items.NETHERITE_BOOTS), "ok");
+		check("billion zombie: does not despawn", bz.isPersistenceRequired(), "ok");
+		Zombie victim = EntityType.ZOMBIE.create(level);
+		victim.moveTo(zp.getX() + 1.5, zp.getY(), zp.getZ() + 0.5);
+		victim.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.NETHERITE_CHESTPLATE));
+		level.addFreshEntity(victim);
+		boolean hit = bz.doHurtTarget(victim);
+		check("billion zombie one-shots an armored mob", hit && victim.isDeadOrDying(), "hit=" + hit + " health=" + victim.getHealth());
+		bz.discard();
+		victim.discard();
+
+		// ---- vanilla creative tabs do not list a billion books ----
+		long tTabs = System.nanoTime();
+		net.minecraft.world.item.CreativeModeTabs.tryRebuildTabContents(server.getWorldData().enabledFeatures(), true, server.registryAccess());
+		long tabsMs = (System.nanoTime() - tTabs) / 1_000_000;
+		int searchSize = net.minecraft.world.item.CreativeModeTabs.searchTab().getSearchTabDisplayItems().size();
+		check("creative tabs build fast", tabsMs < 20000 && searchSize > 1000 && searchSize < 100000, tabsMs + " ms, search tab items=" + searchSize);
+
 		// ---- Roman numerals ----
 		check("roman numerals", E200Text.levelText(1).equals("I") && E200Text.levelText(4).equals("IV")
 				&& E200Text.levelText(14).equals("XIV") && E200Text.levelText(99).equals("XCIX")
 				&& E200Text.levelText(200).equals("CC") && E200Text.levelText(399).equals("CCCXCIX")
-				&& E200Text.levelText(400).equals("400"), E200Text.levelText(200));
+				&& E200Text.levelText(400).equals("400") && E200Text.levelText(1_000_000_000).equals("1 000 000 000"), E200Text.levelText(200));
 
 		// ---- Commands ----
 		CommandSourceStack src = server.createCommandSourceStack().withSuppressedOutput();
@@ -239,6 +309,16 @@ public final class SelfTest {
 	}
 
 	private String lastAnvil = "";
+	private ItemStack lastOut = ItemStack.EMPTY;
+
+	private boolean anvilEmpty(FakePlayer fp, ItemStack left, ItemStack right) {
+		AnvilMenu menu = new AnvilMenu(0, fp.getInventory());
+		menu.getSlot(0).set(left);
+		menu.getSlot(1).set(right);
+		menu.createResult();
+		lastAnvil = "result=" + menu.getSlot(2).getItem();
+		return menu.getSlot(2).getItem().isEmpty();
+	}
 
 	private boolean anvil(FakePlayer fp, ItemStack left, ItemStack right, Holder<Enchantment> h, int expected) {
 		AnvilMenu menu = new AnvilMenu(0, fp.getInventory());
@@ -248,6 +328,7 @@ public final class SelfTest {
 		ItemStack out = menu.getSlot(2).getItem();
 		int lvl = EnchantmentHelper.getEnchantmentsForCrafting(out).getLevel(h);
 		int cost = menu.getCost();
+		lastOut = out;
 		lastAnvil = "result=" + (out.isEmpty() ? "EMPTY" : out.getItem() + " lvl " + lvl) + " cost=" + cost;
 		return !out.isEmpty() && lvl == expected && cost > 0 && cost <= E200Config.get().clampedAnvilMaxCost();
 	}

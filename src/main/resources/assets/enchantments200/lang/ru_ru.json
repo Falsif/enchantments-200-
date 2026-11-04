@@ -18,5 +18,7 @@
   "e200.give.many": "Выдана книга %s игрокам: %s",
   "e200.max.one": "Получена книга %s",
   "e200.max.all": "Получено книг максимального уровня: %s (лишние выпали под ноги)",
-  "e200.apply": "Наложено: %s"
+  "e200.apply": "Наложено: %s",
+  "item.enchantments200.billion_zombie_spawn_egg": "Яйцо призыва зомби-миллиардника",
+  "entity.enchantments200.billion_zombie": "Зомби-миллиардник"
 }

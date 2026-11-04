@@ -16,9 +16,9 @@ public final class E200Text {
 	private static final int[] VALUES = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
 	private static final String[] SYMBOLS = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
 
-	/** Roman numeral for 1..399, plain number above (as the spec asks). */
+	/** Roman numeral for 1..399, plain number above (1 000 000 000). */
 	public static String levelText(int level) {
-		if (level <= 0 || level > 399) return Integer.toString(level);
+		if (level <= 0 || level > 399) return String.format(java.util.Locale.ROOT, "%,d", level).replace(',', ' ');
 		StringBuilder sb = new StringBuilder();
 		int n = level;
 		for (int i = 0; i < VALUES.length; i++) {

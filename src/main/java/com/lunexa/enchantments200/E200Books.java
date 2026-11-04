@@ -35,7 +35,7 @@ public final class E200Books {
 	/** Levels shown in the creative tab for each enchantment. */
 	public static TreeSet<Integer> creativeLevels(int max) {
 		TreeSet<Integer> set = new TreeSet<>();
-		for (int l : new int[]{1, 5, 10, 25, 50, 100, 150, 200, 255}) {
+		for (int l : new int[]{1, 5, 10, 50, 100, 200, 1000, 1_000_000, 1_000_000_000}) {
 			if (l <= max) set.add(l);
 		}
 		set.add(max);

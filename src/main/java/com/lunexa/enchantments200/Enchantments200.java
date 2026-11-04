@@ -13,6 +13,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -28,9 +31,14 @@ public class Enchantments200 implements ModInitializer {
 	public static final ResourceKey<CreativeModeTab> TAB_KEY =
 			ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(MOD_ID, "books"));
 
+	public static final Item BILLION_ZOMBIE_EGG = new BillionZombieEggItem(new Item.Properties());
+
 	@Override
 	public void onInitialize() {
 		LOGGER.info("[Enchantments 200] config: {}", E200Config.load());
+
+		Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "billion_zombie_spawn_egg"), BILLION_ZOMBIE_EGG);
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(entries -> entries.accept(BILLION_ZOMBIE_EGG));
 
 		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, TAB_KEY, FabricItemGroup.builder()
 				.title(Component.translatableWithFallback("itemGroup.enchantments200.books", "Enchantments 200"))
@@ -39,7 +47,9 @@ public class Enchantments200 implements ModInitializer {
 					icon.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
 					return icon;
 				})
-				.displayItems((params, output) -> params.holders().lookup(Registries.ENCHANTMENT).ifPresent(reg ->
+				.displayItems((params, output) -> {
+					output.accept(BILLION_ZOMBIE_EGG);
+					params.holders().lookup(Registries.ENCHANTMENT).ifPresent(reg ->
 						reg.listElements()
 								.sorted(Comparator.comparing(h -> h.key().location().toString()))
 								.forEach(h -> {
@@ -47,7 +57,8 @@ public class Enchantments200 implements ModInitializer {
 									for (int level : E200Books.creativeLevels(holder.value().getMaxLevel())) {
 										output.accept(E200Books.book(holder, level));
 									}
-								})))
+								}));
+				})
 				.build());
 
 		CommandRegistrationCallback.EVENT.register(E200Commands::register);

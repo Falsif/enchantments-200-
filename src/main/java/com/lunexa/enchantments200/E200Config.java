@@ -19,8 +19,12 @@ public final class E200Config {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 	private static volatile E200Config instance = new E200Config();
 
-	/** Max level of every enchantment (1..255). 255 is the hard limit of Minecraft's item format. */
-	public int maxLevel = 200;
+	/** Config format version (for automatic upgrades of old config files). */
+	public int configVersion = CURRENT_VERSION;
+	public static final int CURRENT_VERSION = 2;
+
+	/** Max level of every enchantment (1..2 000 000 000). The mod lifts Minecraft's 255 limit. */
+	public int maxLevel = 1_000_000_000;
 
 	/** "sum": two books with the same enchantment add up (100 + 100 = 200). "vanilla": V + V = VI. */
 	public String anvilMergeMode = "sum";
@@ -62,6 +66,10 @@ public final class E200Config {
 		m.put("minecraft:knockback", 30);      // mobs fly through unloaded chunks
 		m.put("minecraft:punch", 30);
 		m.put("minecraft:soul_speed", 20);
+		m.put("minecraft:fortune", 1000);       // a billion diamonds per ore = millions of item stacks
+		m.put("minecraft:looting", 1000);
+		m.put("minecraft:luck_of_the_sea", 1000);
+		m.put("minecraft:piercing", 100);       // arrows store piercing in one byte (max 127)
 		return m;
 	}
 
@@ -70,7 +78,7 @@ public final class E200Config {
 	}
 
 	public int clampedMaxLevel() {
-		return Math.max(1, Math.min(255, maxLevel));
+		return Math.max(1, Math.min(2_000_000_000, maxLevel));
 	}
 
 	public int clampedAnvilMaxCost() {
@@ -92,10 +100,20 @@ public final class E200Config {
 		String status;
 		try {
 			if (Files.exists(p)) {
+				com.google.gson.JsonObject json;
 				try (Reader r = Files.newBufferedReader(p, StandardCharsets.UTF_8)) {
-					E200Config read = GSON.fromJson(r, E200Config.class);
-					if (read != null) cfg = read;
+					json = com.google.gson.JsonParser.parseReader(r).getAsJsonObject();
 				}
+				E200Config read = GSON.fromJson(json, E200Config.class);
+				if (read != null) cfg = read;
+				int version = json.has("configVersion") ? json.get("configVersion").getAsInt() : 1;
+				if (version < 2) {
+					// 1.0.0 -> 1.1.0: max level 200 -> 1 000 000 000, new safety caps.
+					if (cfg.maxLevel == 200) cfg.maxLevel = 1_000_000_000;
+					if (cfg.effectLevelCaps == null) cfg.effectLevelCaps = new LinkedHashMap<>();
+					for (Map.Entry<String, Integer> e : defaultCaps().entrySet()) cfg.effectLevelCaps.putIfAbsent(e.getKey(), e.getValue());
+				}
+				cfg.configVersion = CURRENT_VERSION;
 				if (cfg.effectLevelCaps == null) cfg.effectLevelCaps = new LinkedHashMap<>();
 				if (cfg.anvilMergeMode == null) cfg.anvilMergeMode = "sum";
 				status = "loaded " + p.getFileName();
