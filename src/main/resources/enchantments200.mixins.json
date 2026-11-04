@@ -13,6 +13,7 @@
     "ItemEnchantmentsMixin",
     "ItemEnchantmentsMutableMixin",
     "ItemMixin",
+    "LevelsSquaredMixin",
     "VillagerTradesMixin"
   ],
   "client": [],

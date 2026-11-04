@@ -246,6 +246,22 @@ public final class SelfTest {
 		float pB = EnchantmentHelper.getDamageProtection(level, armoredB, melee);
 		float afterB = CombatRules.getDamageAfterMagicAbsorb(100.0F, pB);
 		check("Protection 1 000 000 000: 100 damage becomes", afterB > 0.5F && afterB < 2.0F, afterB);
+		{
+			double[] effB = {0};
+			EnchantmentHelper.forEachModifier(enchanted(Items.DIAMOND_PICKAXE, efficiency, B), EquipmentSlot.MAINHAND, (attr, mod) -> {
+				if (attr.equals(Attributes.MINING_EFFICIENCY)) effB[0] += mod.amount();
+			});
+			check("Efficiency 1 000 000 000 is positive (no overflow)", effB[0] > 1.0E17, effB[0]);
+			// Every attribute bonus of every enchantment keeps its sign at 1 000 000 000.
+			for (Holder.Reference<Enchantment> h : reg.holders().toList()) {
+				for (var eff : h.value().getEffects(net.minecraft.world.item.enchantment.EnchantmentEffectComponents.ATTRIBUTES)) {
+					float a1 = eff.amount().calculate(1);
+					float aB = eff.amount().calculate(B);
+					boolean ok = Float.isFinite(aB) && (a1 == 0 || Math.signum(a1) == Math.signum(aB));
+					check("attribute bonus sign at 1 000 000 000: " + h.key().location().getPath() + " " + eff.attribute().getRegisteredName(), ok, "lvl1=" + a1 + " lvlB=" + aB);
+				}
+			}
+		}
 		check("Unbreaking 1 000 000 000: 10000 hits become", EnchantmentHelper.processDurabilityChange(level, enchanted(Items.DIAMOND_PICKAXE, unbreaking, B), 10000) == 0, "0");
 		ItemStack pickB = enchanted(Items.DIAMOND_PICKAXE, fortune, B);
 		long tF = System.nanoTime();
